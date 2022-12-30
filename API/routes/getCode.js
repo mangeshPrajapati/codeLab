@@ -5,14 +5,13 @@ const userId = require('./login')
 const session = require("express-session");
 const app = express()
 
-app.get('/view/:id',(req, res) => {
+app.get('/getcode/:id',(req, res) => {
     var idObj = req.params;
     var id = idObj.id
-    
-    const sql = "select * from user_code where user_id = ?"
+    const sql = "select code from user_code where id = ?"
     conn.query(sql,[id], (err, data) => {
         if(err) throw err;
-        res.status(201).json(data)
+        res.json(data)
     })
 })
 

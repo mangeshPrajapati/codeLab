@@ -5,14 +5,16 @@ const userId = require('./login')
 const session = require("express-session");
 const app = express()
 
-app.get('/view/:id',(req, res) => {
+app.post('/update/:id',(req, res) => {
     var idObj = req.params;
     var id = idObj.id
-    
-    const sql = "select * from user_code where user_id = ?"
-    conn.query(sql,[id], (err, data) => {
+    const code = req.body.code
+    var msg;
+    const sql = "update user_code set code = ? where id = ?"
+    conn.query(sql,[code,id], (err) => {
         if(err) throw err;
-        res.status(201).json(data)
+        msg = "Data Updated"
+        res.send(msg)
     })
 })
 

@@ -12,6 +12,9 @@ const logout = require('./routes/logout')
 const save = require('./routes/save')
 const view = require('./routes/view')
 const delData = require('./routes/delete')
+const compile = require('./routes/compile')
+const getCode = require('./routes/getCode')
+const update = require('./routes/update')
 
 const app = express();
 
@@ -40,6 +43,9 @@ app.use('/', logout)
 app.use('/', save)
 app.use('/', view)
 app.use('/', delData)
+app.use('/',compile)
+app.use('/',getCode)
+app.use('/',update)
 
 
 app.listen(port,() => {

@@ -2,10 +2,10 @@ const express = require('express')
 const conn = require('../private/db')
 const app = express()
 
-app.delete('/delete/:iddelete',(req, res) => {
+app.delete('/delete/:id',(req, res) => {
     var idObj = req.params;
-    var id = idObj.iddelete
-    const sql = "delete from usercode where id = ?";
+    var id = idObj.id
+    const sql = "delete from user_code where id = ?";
     conn.query(sql,[id],(err)=>{
         if(err) throw err;
         res.send("Entry deleted")

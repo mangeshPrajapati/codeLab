@@ -1,67 +1,220 @@
-import React, { useState } from 'react'
-import {uname, uId} from './Login'
-import { useEffect } from 'react'
-import './style.css'
-import Axios from 'axios'
+import React from 'react'
+import '../styles/Home.css'
+
+import { useState } from 'react';
+import Editor from "@monaco-editor/react";
+import Navbar from '../components/Navbar';
+import Axios from 'axios';
+import { useEffect } from 'react';
+import { uname, uId } from './Login';
 
 
 const Dashboard = () => {
-    const [code, setCode] = useState('')
-    const [cname, setCname] = useState('')
+  const [userData, setUserData] = useState([]);
+    // State variable to set users source code
+  const [userCode, setUserCode] = useState(``);
+ 
+  // State variable to set editors default language
+  const [userLang, setUserLang] = useState("python");
+ 
+  // State variable to set editors default theme
+  const [userTheme, setUserTheme] = useState("vs-dark");
+ 
+  // State variable to set editors default font size
+  const [fontSize, setFontSize] = useState(20);
+ 
+  // State variable to set users input
+  const [userInput, setUserInput] = useState("");
+ 
+  // State variable to set users output
+  const [userOutput, setUserOutput] = useState("");
 
-    //save code with name
-    const saveCode = (e) => {
-        e.preventDefault()
-
-        Axios.post('http://localhost:8000/save',{
-            cname:cname,
-            code:code,
-            userid:uId
-        }).then(response => {
-            console.log(response)
-        })
-        console.table({cname,code, uId}) 
+  //name of the code
+  const [codeName, setCodeName] = useState("")
+ 
+  // Loading state variable to show spinner
+  // while fetching data
+  const [loading, setLoading] = useState(false);
+   
+  const options = {
+    fontSize: fontSize
+  }
+ 
+  // Function to call the compile endpoint
+  function compile() {
+    setLoading(true);
+    if (userCode === ``) {
+      return
     }
+ 
+    // Post request to compile endpoint
+    Axios.post(`http://localhost:8000/compile`, {
+      code: userCode,
+      language: userLang,
+      input: userInput }).then((res) => {
+      setUserOutput(res.data.output);
+    }).then(() => {
+      setLoading(false);
+    })
+  }
 
-    //view code 
-    // const viewCode = () => {
-    //     Axios.post('http://localhost:8000/view',{
-    //         uId:uId
-    //     }).then((response) => {
-    //         console.log(response)
-    //     })
-    // }
-    const getData = async () => {
-        const result = await fetch("http://localhost:8000/view",{
-            method:'get',
-            headers:{
-                "Content-Type":"application/json"
-            }
+  //Save Code
+
+  const saveCode = () => {
+    if(codeName!=""){
+    Axios.post(`http://localhost:8000/save`,{
+      cname:codeName,
+      code:userCode,
+      user_id:uId
+    }).then((res)=>{
+      console.log(res)
+      getData()
+    })
+  }else{
+    alert("Name is Required")
+  }
+  }
+
+  const getData = async () => {
+    const result = await fetch(`http://localhost:8000/view/${uId}`,{
+        method:'get',
+        headers:{
+            "Content-Type":"application/json"
         }
-        )
-
-        const data = await result.json()
-        console.log(data)
     }
-
-    useEffect(() => {
-        getData();
-    }, [])
-
-    console.log(uname)
-    console.log(uId)
-    return(
-        <div>
-            <h1>This is dashboard</h1><br/>
-            <h1>Name {uname}</h1>
-            <h1>Id {uId}</h1>
-            <label>file Name </label>
-            <input type='text' onChange={(e) => {setCname(e.target.value)}}></input>
-            <textarea className='txtarea' onChange={(e) => {setCode(e.target.value)}}></textarea>
-            <button onClick={saveCode}>Save</button><br/>
-            <button onClick={getData}>getData</button>
-        </div>
     )
+
+    const data = await result.json()
+    
+    setUserData(data)
+    
+}
+
+useEffect(() => {
+    getData();
+}, [])
+
+
+//Delete the entry
+const deleteData = (id) => {
+  Axios.delete(`http://localhost:8000/delete/${id}`
+  ).then(response => {
+    getData()
+  })
+}
+ 
+  // Function to clear the output screen
+  function clearOutput() {
+    setUserOutput("");
+  }
+
+  //Code to edit and print on the editor
+  const printCode = (id) => {
+     console.log(id)
+     Axios.get(`http://localhost:8000/getcode/${id}`
+     ).then((res) => {
+      setUserCode(res.data[0].code)
+     })
+  }
+
+  //Update the code
+  const updateData = (id) =>{
+    console.log(userCode)
+    Axios.post(`http://localhost:8000/update/${id}`,{
+      code:userCode
+    }).then((res) => {
+      alert(res.data)
+    })
+  }
+
+ 
+  return (
+    <div className="App">
+      <Navbar
+        userLang={userLang} setUserLang={setUserLang}
+        userTheme={userTheme} setUserTheme={setUserTheme}
+        fontSize={fontSize} setFontSize={setFontSize}
+        codeName={codeName} setCodeName={setCodeName}
+      />
+      <div className="main">
+      <div className='user-data'><h4>User Data</h4><div className='data-box'>
+          <table>
+            <thead>
+              <tr>
+                <th>Sr</th>
+                <th>Name</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th>Update</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                userData.map((element, id) => {
+                  return(
+                    <>
+                    <tr>
+                        <td scope="row">{id + 1}</td>
+                        <td>{element.cname}</td>
+                        <td><button className='e-btn' onClick={() => printCode(element.id)}>Edit</button></td>
+                        <td><button className='d-btn' onClick={()=>deleteData(element.id)}>Delete</button></td>
+                        <td><button className='u-btn' onClick={()=>updateData(element.id)}>Update</button></td>
+                      </tr>
+                    </>
+                  )
+                })
+                
+              }
+            </tbody>
+          </table>
+        </div></div>
+        <div className="left-container">
+          
+          
+            <Editor
+              options={options}
+              height="calc(100vh - 50px)"
+              width="100%"
+              theme={userTheme}
+              language={userLang}
+              defaultLanguage="python"
+              defaultValue="Start Coding..."
+              value={userCode}
+              onChange={(value) => { setUserCode(value) }}
+            />
+            <button className="run-btn" onClick={() => compile()}>
+              Run
+            </button>
+        </div>
+        <div className="right-container">
+          <h4>Input:</h4>
+          <div className="input-box">
+            <textarea id="code-inp" onChange=
+              {(e) => setUserInput(e.target.value)}>
+            </textarea>
+          </div>
+          <h4>Output:</h4>
+          {loading ? (
+            <div className="spinner-box">
+              <p>Loading...</p>
+            </div>
+          ) : (
+            <div className="output-box">
+              <pre>{userOutput}</pre>
+              <button onClick={() => { clearOutput() }}
+                 className="clear-btn">
+                 Clear
+              </button>
+              <button onClick={() => { saveCode() }}
+                 className="save-btn">
+                 Save
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Dashboard;
