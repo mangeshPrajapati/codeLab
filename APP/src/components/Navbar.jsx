@@ -16,6 +16,7 @@ const Navbar = ({userLang, setUserLang, userTheme,
         { value: "light", label: "Light" },
     ]
     return (
+        <>
         <div className="navbar">
             <h1>codeLab</h1>
             <Select options={languages} value={userLang}
@@ -30,7 +31,8 @@ const Navbar = ({userLang, setUserLang, userTheme,
                    onChange={(e) => { setFontSize(e.target.value)}}/>
             <label className='username'>file Name : </label><input className='codeName' placeholder='file name' onChange={(e) => setCodeName(e.target.value)}></input>
             <h3 className='userName'>{uname}</h3>
-        </div>
+            </div>
+        </>
     )
 }
  

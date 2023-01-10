@@ -12,6 +12,7 @@ app.post('/register', (req, res) => {
     var msql = "SELECT * FROM user WHERE username = ?;";
 
     var msg=''
+    var isInsert=false
 
     conn.query(msql,[username], function(err, result){
         if(err) throw err;
@@ -25,9 +26,13 @@ app.post('/register', (req, res) => {
                 console.log(result.insertId)
                 
             });
-            msg="Registration Success";
+            msg="Registration Success Sign in now";
+            isInsert=true
         }
-        res.send(msg);
+        res.send({
+            msg,
+            isInsert
+        })
     });
 })
 

@@ -6,7 +6,7 @@ import Editor from "@monaco-editor/react";
 import Navbar from '../components/Navbar';
 import Axios from 'axios';
 import { useEffect } from 'react';
-import { uname, uId } from './Login';
+import { uId } from './Login';
 
 
 const Dashboard = () => {
@@ -35,10 +35,12 @@ const Dashboard = () => {
   // Loading state variable to show spinner
   // while fetching data
   const [loading, setLoading] = useState(false);
+  
    
   const options = {
     fontSize: fontSize
   }
+  
  
   // Function to call the compile endpoint
   function compile() {
@@ -126,9 +128,45 @@ const deleteData = (id) => {
       alert(res.data)
     })
   }
+  
 
- 
+  //Download file
+  const downloadTxtFile = () => {
+    if(codeName!=""){
+      const element = document.createElement("a");
+      const file = new Blob([userCode], {
+        type: "text/plain"
+      });
+      console.log(userLang)
+      element.href = URL.createObjectURL(file);
+      if(userLang=="python"){
+        element.download=`${codeName}.py`
+      }else if(userLang=="javascript"){
+        element.download=`${codeName}.js`
+      }else{
+        element.download = `${codeName}.${userLang}`;
+      }
+      document.body.appendChild(element);
+      element.click();
+    }else{
+      alert("Name is Required!")
+    }
+  };
+
+  var msg
+    if(userLang=="python"){
+      msg='# Your First Python Program \nprint("Hello, World")'
+    }else if(userLang=="javascript"){
+      msg='// Your First Javascript Program \nconsole.log("Hellow World")'
+    }else if(userLang=="c"){
+      msg='// Your First C Program \n#include <stdio.h>\nint main()\n{\n\tprintf("Hello World");\n\treturn 0;\n}'
+    }else if(userLang=="cpp"){
+      msg='// Your First C++ Program \n#include <iostream> \nint main() { \n\tstd::cout << "Hello World!"; \n\treturn 0; \n}'
+    }
+
   return (
+    <>
+    <meta name="viewport" content="width=1024" />
     <div className="App">
       <Navbar
         userLang={userLang} setUserLang={setUserLang}
@@ -178,12 +216,15 @@ const deleteData = (id) => {
               theme={userTheme}
               language={userLang}
               defaultLanguage="python"
-              defaultValue="Start Coding..."
-              value={userCode}
+              defaultValue="#Start Coding..."
+              value={msg}
               onChange={(value) => { setUserCode(value) }}
             />
             <button className="run-btn" onClick={() => compile()}>
               Run
+            </button>
+            <button onClick={downloadTxtFile} className="download-btn">
+              Download
             </button>
         </div>
         <div className="right-container">
@@ -209,11 +250,13 @@ const deleteData = (id) => {
                  className="save-btn">
                  Save
               </button>
+              
             </div>
           )}
         </div>
       </div>
     </div>
+    </>
   );
 }
 
