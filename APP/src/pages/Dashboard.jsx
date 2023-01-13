@@ -6,13 +6,14 @@ import Editor from "@monaco-editor/react";
 import Navbar from '../components/Navbar';
 import Axios from 'axios';
 import { useEffect } from 'react';
-import { uId } from './Login';
+import { useNavigate } from 'react-router-dom';
 
 
 const Dashboard = () => {
+  const uId = window.localStorage.getItem("userId")
   const [userData, setUserData] = useState([]);
     // State variable to set users source code
-  const [userCode, setUserCode] = useState(``);
+  const [userCode, setUserCode] = useState(`#Start Coding...\nprint("Hello, World")`);
  
   // State variable to set editors default language
   const [userLang, setUserLang] = useState("python");
@@ -35,6 +36,8 @@ const Dashboard = () => {
   // Loading state variable to show spinner
   // while fetching data
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate()
   
    
   const options = {
@@ -48,6 +51,7 @@ const Dashboard = () => {
     if (userCode === ``) {
       return
     }
+    console.log("send")
  
     // Post request to compile endpoint
     Axios.post(`http://localhost:8000/compile`, {
@@ -83,13 +87,9 @@ const Dashboard = () => {
         headers:{
             "Content-Type":"application/json"
         }
-    }
-    )
-
+    })
     const data = await result.json()
-    
     setUserData(data)
-    
 }
 
 useEffect(() => {
@@ -163,6 +163,13 @@ const deleteData = (id) => {
     }else if(userLang=="cpp"){
       msg='// Your First C++ Program \n#include <iostream> \nint main() { \n\tstd::cout << "Hello World!"; \n\treturn 0; \n}'
     }
+  
+    var isLog = window.localStorage.getItem("isloggedIn")
+  useEffect(() => {
+    if(!isLog){
+      navigate('/login')
+    }
+  })
 
   return (
     <>
@@ -194,9 +201,9 @@ const deleteData = (id) => {
                     <tr>
                         <td scope="row">{id + 1}</td>
                         <td>{element.cname}</td>
-                        <td><button className='e-btn' onClick={() => printCode(element.id)}>Edit</button></td>
-                        <td><button className='d-btn' onClick={()=>deleteData(element.id)}>Delete</button></td>
-                        <td><button className='u-btn' onClick={()=>updateData(element.id)}>Update</button></td>
+                        <td><button className='ibtn' onClick={() => printCode(element.id)}>Edit</button></td>
+                        <td><button className='ibtn' onClick={()=>deleteData(element.id)}>Delete</button></td>
+                        <td><button className='ibtn' onClick={()=>updateData(element.id)}>Update</button></td>
                       </tr>
                     </>
                   )
@@ -217,7 +224,7 @@ const deleteData = (id) => {
               language={userLang}
               defaultLanguage="python"
               defaultValue="#Start Coding..."
-              value={msg}
+              value={userCode}
               onChange={(value) => { setUserCode(value) }}
             />
             <button className="run-btn" onClick={() => compile()}>

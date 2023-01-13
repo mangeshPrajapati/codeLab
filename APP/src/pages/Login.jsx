@@ -4,12 +4,14 @@ import Axios from 'axios'
 import {Link} from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import '../styles/register.css'
+import { useEffect } from 'react';
 
-export var uname = ''
-export var uId = 0
+
 function Login(){
 
-    
+    var uname = ''
+    var uId = 0
+    var isLog=false
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [output, setOutput] = useState(null)
@@ -32,6 +34,10 @@ function Login(){
                 isValid = response.data.isValid;
                 uname = response.data.username
                 uId = response.data.userId
+                //save in browser
+                window.localStorage.setItem("username",uname)
+                window.localStorage.setItem("userId",uId)
+                window.localStorage.setItem("isloggedIn",true)
                 
                 if(isValid===true){
                     navigate('/dashboard')
@@ -42,6 +48,13 @@ function Login(){
             });
         }
     }
+
+    isLog = window.localStorage.getItem("isloggedIn")
+    useEffect(() => {
+        if(isLog){
+            navigate('/dashboard')
+        }
+    }, [])
 
     return(
         <div className="contain">

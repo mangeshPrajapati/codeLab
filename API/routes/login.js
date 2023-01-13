@@ -24,9 +24,6 @@ app.post('/login',(req,res,next)=>{
             console.log("login success "+username)
             console.log(result[0].id)
             userId = result[0].id;
-            req.session.userLoggedIn = true
-            req.session.userId = userId
-            
             isValid = true
             //res.send(msg)
             //res.redirect('/dashboard')

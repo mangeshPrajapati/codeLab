@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import '../styles/Navbar.css';
-import {uname} from "../pages/Login"
+import { useNavigate } from 'react-router-dom';
  
 const Navbar = ({userLang, setUserLang, userTheme,
                 setUserTheme, fontSize, setFontSize,codeName, setCodeName}) => {
@@ -15,6 +15,17 @@ const Navbar = ({userLang, setUserLang, userTheme,
         { value: "vs-dark", label: "Dark" },
         { value: "light", label: "Light" },
     ]
+    const navigate=useNavigate()
+
+    const loggedOut = () => {
+        window.localStorage.removeItem("username")
+        window.localStorage.removeItem("isloggedIn")
+        window.localStorage.removeItem("userId")
+        navigate('/login')
+
+    }
+
+    const uname = window.localStorage.getItem("username")
     return (
         <>
         <div className="navbar">
@@ -31,6 +42,7 @@ const Navbar = ({userLang, setUserLang, userTheme,
                    onChange={(e) => { setFontSize(e.target.value)}}/>
             <label className='username'>file Name : </label><input className='codeName' placeholder='file name' onChange={(e) => setCodeName(e.target.value)}></input>
             <h3 className='userName'>{uname}</h3>
+            <button className="log-btn" onClick={loggedOut}>Logout</button>
             </div>
         </>
     )

@@ -146,16 +146,21 @@
     text-align: center;
     
   }
-
-  .e-btn{
-    width:50px
-  }
-  .d-btn{
-    width:60px
-  }
   th{
     color:#afec3f
   }
   td{
-    color:#1f65e6
+    color:white
+  }
+
+  .ibtn {
+    background-color: #3c61a5;
+    border-style: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    padding: 5px 5px;
+  }
+  .ibtn:hover {
+    background-color: rgb(0, 64, 255);
   }

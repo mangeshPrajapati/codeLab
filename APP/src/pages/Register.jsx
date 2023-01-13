@@ -4,6 +4,7 @@ import { Link} from 'react-router-dom'
 import Axios from 'axios'
 import { useNavigate } from "react-router-dom";
 import "../styles/register.css"
+import { useEffect } from 'react';
 
 function Register(){
     const [username, setUsername] = useState("")
@@ -31,6 +32,13 @@ function Register(){
             });
         }
     }
+
+    var isLog = window.localStorage.getItem("isloggedIn")
+    useEffect(() => {
+        if(isLog){
+            navigate('/dashboard')
+        }
+    }, [])
 
     return(
         <div className="contain">

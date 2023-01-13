@@ -28,12 +28,12 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
 //Session creation
-app.use(session({ 
-    secret: '123456cat',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 60000 }
-  }))
+// app.use(session({ 
+//     secret: '123456cat',
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: { maxAge: 60000 }
+//   }))
 
 
 //Used routes 
