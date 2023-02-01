@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/register.css"
 import { useEffect } from 'react';
 
+
 function Register(){
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")

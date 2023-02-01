@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar';
 import Axios from 'axios';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Pop from '../components/pop'
 
 
 const Dashboard = () => {
@@ -36,6 +37,7 @@ const Dashboard = () => {
   // Loading state variable to show spinner
   // while fetching data
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const navigate = useNavigate()
   
@@ -77,7 +79,8 @@ const Dashboard = () => {
       getData()
     })
   }else{
-    alert("Name is Required")
+    //alert("Name is Required")
+    setIsOpen(!isOpen)
   }
   }
 
@@ -171,6 +174,10 @@ const deleteData = (id) => {
     }
   })
 
+  function handleToggle(){
+    setIsOpen(!isOpen)
+  }
+
   return (
     <>
     <meta name="viewport" content="width=1024" />
@@ -181,6 +188,7 @@ const deleteData = (id) => {
         fontSize={fontSize} setFontSize={setFontSize}
         codeName={codeName} setCodeName={setCodeName}
       />
+      
       <div className="main">
       <div className='user-data'><h4>User Data</h4><div className='data-box'>
           <table>
@@ -257,6 +265,15 @@ const deleteData = (id) => {
                  className="save-btn">
                  Save
               </button>
+              {isOpen && <Pop 
+                content={
+                  <>
+                  <h2>File name</h2>
+                    <h3>Write the name of the file </h3>
+                  </>
+                }
+                handleClose={handleToggle}
+              />}
               
             </div>
           )}
