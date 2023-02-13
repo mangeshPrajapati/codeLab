@@ -25,6 +25,12 @@ app.post('/login',(req,res,next)=>{
             console.log(result[0].id)
             userId = result[0].id;
             isValid = true
+            res.send({
+                userId,
+                username,
+                isValid,
+                msg
+            })
             //res.send(msg)
             //res.redirect('/dashboard')
             
@@ -33,14 +39,12 @@ app.post('/login',(req,res,next)=>{
             isValid = false
             msg="Sorry Username or Password may be incorrect"
             console.log("Not success "+ username)
-            //res.send(msg)
+            res.send({
+                msg,
+                isValid
+            })
             
         }
-        res.send({
-            userId,
-            username,
-            isValid
-        })
     })
 })
 

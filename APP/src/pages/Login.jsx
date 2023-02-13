@@ -32,12 +32,16 @@ function Login(){
             }).then(response => {
                 console.log(response.data)
                 isValid = response.data.isValid;
+                console.log("isValid value comes here"+isValid)
                 uname = response.data.username
                 uId = response.data.userId
+                setOutput(response.data.msg)
                 //save in browser
-                window.localStorage.setItem("username",uname)
-                window.localStorage.setItem("userId",uId)
-                window.localStorage.setItem("isloggedIn",true)
+                if(isValid == true){
+                    window.localStorage.setItem("username",uname)
+                    window.localStorage.setItem("userId",uId)
+                    window.localStorage.setItem("isloggedIn",true)
+                }
                 
                 if(isValid===true){
                     navigate('/dashboard')

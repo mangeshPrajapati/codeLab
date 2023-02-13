@@ -9,6 +9,10 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Pop from '../components/pop'
 
+import draw from '../images/draw.png'
+import trash from '../images/trash.png'
+import updte from '../images/update.png'
+
 
 const Dashboard = () => {
   const uId = window.localStorage.getItem("userId")
@@ -123,12 +127,14 @@ const deleteData = (id) => {
   }
 
   //Update the code
+  const [update, setUpdate] = useState(false)
   const updateData = (id) =>{
     console.log(userCode)
     Axios.post(`http://localhost:8000/update/${id}`,{
       code:userCode
     }).then((res) => {
-      alert(res.data)
+      setUpdate(res.data.update);
+      console.log(update)
     })
   }
   
@@ -177,6 +183,9 @@ const deleteData = (id) => {
   function handleToggle(){
     setIsOpen(!isOpen)
   }
+  function handleUpdateToggle(){
+    setUpdate(false)
+  }
 
   return (
     <>
@@ -193,7 +202,7 @@ const deleteData = (id) => {
       <div className='user-data'><h4>User Data</h4><div className='data-box'>
           <table>
             <thead>
-              <tr>
+              <tr style={{justifyContent:'space-between'}}>
                 <th>Sr</th>
                 <th>Name</th>
                 <th>Edit</th>
@@ -208,10 +217,10 @@ const deleteData = (id) => {
                     <>
                     <tr>
                         <td scope="row">{id + 1}</td>
-                        <td>{element.cname}</td>
-                        <td><button className='ibtn' onClick={() => printCode(element.id)}>Edit</button></td>
-                        <td><button className='ibtn' onClick={()=>deleteData(element.id)}>Delete</button></td>
-                        <td><button className='ibtn' onClick={()=>updateData(element.id)}>Update</button></td>
+                        <td style={{paddingRight:10}}>{element.cname}</td>
+                        <td><button className='ibtn' onClick={() => printCode(element.id)}><img style={{height:20,width:20}} src={draw} alt="Draw"></img></button></td>
+                        <td><button className='ibtn' onClick={()=>deleteData(element.id)}><img style={{height:20,width:20}} src={trash} alt="Delete"></img></button></td>
+                        <td><button className='ibtn' onClick={()=>updateData(element.id)}><img style={{height:20,width:20}} src={updte} alt="Update"></img></button></td>
                       </tr>
                     </>
                   )
@@ -242,6 +251,16 @@ const deleteData = (id) => {
               Download
             </button>
         </div>
+
+              {update ? (<Pop 
+                content={
+                  <h1 style={{color:'green'}}>Data Updated Successfully!</h1>
+                }
+                handleClose={handleUpdateToggle}
+              />) : (
+                <></>
+              )}
+
         <div className="right-container">
           <h4>Input:</h4>
           <div className="input-box">
@@ -269,12 +288,11 @@ const deleteData = (id) => {
                 content={
                   <>
                   <h2>File name</h2>
-                    <h3>Write the name of the file </h3>
+                    <h3 style={{color:'red'}}>Write the name of the file </h3>
                   </>
                 }
                 handleClose={handleToggle}
               />}
-              
             </div>
           )}
         </div>

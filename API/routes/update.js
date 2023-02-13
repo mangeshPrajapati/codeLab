@@ -9,12 +9,14 @@ app.post('/update/:id',(req, res) => {
     var idObj = req.params;
     var id = idObj.id
     const code = req.body.code
-    var msg;
+    var update = false;
     const sql = "update user_code set code = ? where id = ?"
     conn.query(sql,[code,id], (err) => {
         if(err) throw err;
-        msg = "Data Updated"
-        res.send(msg)
+        update = true
+        res.send({
+            update
+        })
     })
 })
 
